@@ -7,5 +7,9 @@ export default () => {
   program
     .version(pkg.version, '-V, --version')
     .description(pkg.description)
-    .parse(process.argv);
+    .option('-f, --format [type]', 'output format');
+
+  program.arguments('<filepath1> <filepath2>');
+
+  program.parse(process.argv);
 };
