@@ -20,9 +20,9 @@ const buildDiffTree = (ref, comp, tree = []) => {
   return getUniqKeys(ref, comp).sort().reduce(toDiffObject, tree);
 };
 
-export default (filepath1, filepath2) => {
+export default (filepath1, filepath2, format) => {
   const reference = JSON.parse(readFile(filepath1));
   const comparable = JSON.parse(readFile(filepath2));
   const result = buildDiffTree(reference, comparable);
-  return getFormatedDiff(result);
+  return getFormatedDiff(result, format);
 };
