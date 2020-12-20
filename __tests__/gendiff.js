@@ -1,21 +1,33 @@
+import { test } from '@jest/globals';
 import genDiff from '../src/gendiff.js';
 import { readFile } from '../src/utils.js';
 
 const getRelativePath = (filename) => `__fixtures__/flat/${filename}`;
 
 test('when files has difference', () => {
-  const filepath1 = getRelativePath('file1.json');
-  const filepath2 = getRelativePath('file2.json');
   const expected = readFile(getRelativePath('stylish_case1.txt'));
-  const result = genDiff(filepath1, filepath2);
-  expect(result).toBe(expected);
+
+  const jsonFile1 = getRelativePath('file1.json');
+  const jsonFile2 = getRelativePath('file2.json');
+  const jsonResult = genDiff(jsonFile1, jsonFile2);
+  expect(jsonResult).toBe(expected);
+
+  const yamlFile1 = getRelativePath('file1.yml');
+  const yamlFile2 = getRelativePath('file2.yml');
+  const yamlResult = genDiff(yamlFile1, yamlFile2);
+  expect(yamlResult).toBe(expected);
 });
 
 test('when files has not difference', () => {
-  const filepath1 = getRelativePath('file1.json');
   const expected = readFile(getRelativePath('stylish_case2.txt'));
-  const result = genDiff(filepath1, filepath1);
-  expect(result).toBe(expected);
+
+  const jsonFile = getRelativePath('file1.json');
+  const jsonResult = genDiff(jsonFile, jsonFile);
+  expect(jsonResult).toBe(expected);
+
+  const yamlFile = getRelativePath('file1.yml');
+  const yamlResult = genDiff(yamlFile, yamlFile);
+  expect(yamlResult).toBe(expected);
 });
 
 test('when file does not exist', () => {
@@ -26,4 +38,10 @@ test('when file does not exist', () => {
 test('when output format is wrong', () => {
   const filepath1 = getRelativePath('file1.json');
   expect(() => genDiff(filepath1, filepath1, 'wrongFormat')).toThrow('formatTo[format] is not a function');
+});
+
+test('when file type is wrong', () => {
+  const filepath1 = getRelativePath('file1.yml');
+  const filepath2 = getRelativePath('empty.ini');
+  expect(() => genDiff(filepath1, filepath2)).toThrow('Wrong filetype');
 });

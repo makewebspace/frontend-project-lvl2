@@ -1,5 +1,6 @@
-import { readFile, getUniqKeys } from './utils.js';
+import parse from './parser.js';
 import getFormatedDiff from './format.js';
+import { readFile, getUniqKeys, getFileType } from './utils.js';
 
 const buildDiffTree = (ref, comp, tree = []) => {
   const toDiffObject = (acc, key) => {
@@ -21,8 +22,8 @@ const buildDiffTree = (ref, comp, tree = []) => {
 };
 
 export default (filepath1, filepath2, format) => {
-  const reference = JSON.parse(readFile(filepath1));
-  const comparable = JSON.parse(readFile(filepath2));
+  const reference = parse(readFile(filepath1), getFileType(filepath1));
+  const comparable = parse(readFile(filepath2), getFileType(filepath2));
   const result = buildDiffTree(reference, comparable);
   return getFormatedDiff(result, format);
 };
