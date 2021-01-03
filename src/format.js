@@ -1,16 +1,28 @@
-export const FORMATS = {
-  RAW: 'raw',
-  STYLISH: 'stylish',
-};
+import { DIFF_TYPE } from './constants.js';
 
-const formatTo = {
-  [FORMATS.RAW]: (diffs) => diffs,
-  [FORMATS.STYLISH]: (diffs) => {
-    const toString = ({ key, val, operation = ' ' }) => `  ${operation} ${key}: ${val}`;
-    return `{\n${diffs.map(toString).join('\n')}\n}`;
+const formaters = {
+  json: (diffs) => JSON.stringify(diffs, null, 2),
+  stylish: (diffs, nest = 0) => {
+    const padding = ' '.repeat(4 * nest + 2);
+    const getValueView = (val) => (Array.isArray(val) ? formaters.stylish(val, nest + 1) : val);
+    const getDiffView = (type, key, value) => `${padding}${type} ${key}: ${getValueView(value)}`;
+    const diffByType = {
+      [DIFF_TYPE.ADD]: (key, val) => getDiffView('+', key, val),
+      [DIFF_TYPE.DEL]: (key, val) => getDiffView('-', key, val),
+      [DIFF_TYPE.UPD]: (key, val, prevVal) => `${getDiffView('-', key, prevVal)}\n${getDiffView('+', key, val)}`,
+      [undefined]: (key, val) => getDiffView(' ', key, val),
+    };
+    const toString = ({ key, value, prevValue, type }) => diffByType[type](key, value, prevValue);
+    return `{\n${diffs.map(toString).join('\n')}\n${padding.substring(2)}}`;
   },
 };
 
-const getFormatedDiff = (diffs, format = FORMATS.STYLISH) => formatTo[format](diffs);
+export const availableFormats = Object.keys(formaters);
 
-export default getFormatedDiff;
+export default (diffs, format) => {
+  if (!availableFormats.includes(format)) {
+    throw Error(`Wrong output format! Available formats to output is ${availableFormats.join(', ')}`);
+  }
+  const toFormat = formaters[format];
+  return toFormat(diffs);
+};

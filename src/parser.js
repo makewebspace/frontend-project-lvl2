@@ -5,9 +5,12 @@ export const parsers = {
   yml: yaml.safeLoad,
 };
 
-export default (content, format) => {
-  if (!Object.keys(parsers).includes(format)) {
-    throw Error('Wrong filetype');
+export const availableTypes = Object.keys(parsers);
+
+export default (content, type) => {
+  if (!availableTypes.includes(type)) {
+    throw Error(`Wrong filetype! Available types is ${availableTypes.join(', ').toUpperCase()}`);
   }
-  return parsers[format](content);
+  const parse = parsers[type];
+  return parse(content);
 };

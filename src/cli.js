@@ -8,7 +8,7 @@ export default () => {
   program
     .version(pkg.version, '-V, --version')
     .description(pkg.description)
-    .option('-f, --format [type]', 'output format');
+    .option('-f, --format [type]', 'output format', 'stylish');
 
   program
     .arguments('<filepath1> <filepath2>')
