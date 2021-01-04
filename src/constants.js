@@ -1,7 +1,8 @@
 export const DIFF_TYPE = {
-  ADD: 'ADD',
-  DEL: 'DEL',
-  UPD: 'UPD',
+  ADD: 'added',
+  DEL: 'deleted',
+  UPD: 'updated',
+  NOT: 'nodiff',
 };
 
 export default {

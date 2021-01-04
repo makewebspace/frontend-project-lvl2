@@ -1,5 +1,5 @@
 import parse from './parser.js';
-import formateDiff from './format.js';
+import formatDiff from './formatters/index.js';
 import { DIFF_TYPE } from './constants.js';
 import {
   readFile,
@@ -8,12 +8,12 @@ import {
   isObject,
 } from './utils.js';
 
-export const calculateDiff = (ref, comp, tree = []) => {
+export const calculateDiff = (ref, comp) => {
   const getValueBy = (val) => (isObject(val) ? calculateDiff(val, val) : val);
   const toDiffObject = (acc, key) => {
     const refVal = ref[key];
     const compVal = comp[key];
-    const diff = { key, value: refVal };
+    const diff = { key, value: refVal, type: DIFF_TYPE.NOT };
     if (refVal === undefined) {
       diff.type = DIFF_TYPE.ADD;
       diff.value = getValueBy(compVal);
@@ -30,12 +30,12 @@ export const calculateDiff = (ref, comp, tree = []) => {
     acc.push(diff);
     return acc;
   };
-  return getUniqKeys(ref, comp).sort().reduce(toDiffObject, tree);
+  return getUniqKeys(ref, comp).sort().reduce(toDiffObject, []);
 };
 
-export default (filepath1, filepath2, format) => {
+export default (filepath1, filepath2, formatName) => {
   const reference = parse(readFile(filepath1), getFileType(filepath1));
   const comparable = parse(readFile(filepath2), getFileType(filepath2));
   const result = calculateDiff(reference, comparable);
-  return formateDiff(result, format);
+  return formatDiff(result, formatName);
 };

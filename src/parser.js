@@ -1,16 +1,16 @@
+import assert from 'assert';
 import yaml from 'js-yaml';
 
-export const parsers = {
+const parsers = {
   json: JSON.parse,
   yml: yaml.safeLoad,
 };
 
-export const availableTypes = Object.keys(parsers);
+const availableTypes = Object.keys(parsers);
+const errorMessage = `Wrong filetype! Available types is ${availableTypes.join(', ')}`;
 
-export default (content, type) => {
-  if (!availableTypes.includes(type)) {
-    throw Error(`Wrong filetype! Available types is ${availableTypes.join(', ').toUpperCase()}`);
-  }
-  const parse = parsers[type];
+export default (content, typeName) => {
+  assert(availableTypes.includes(typeName), errorMessage);
+  const parse = parsers[typeName];
   return parse(content);
 };
