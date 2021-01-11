@@ -28,7 +28,7 @@
         }
       }
     },
-    "type": "nodiff",
+    "type": "nested",
     "children": [
       {
         "key": "follow",
@@ -85,7 +85,7 @@
             "wow": ""
           }
         },
-        "type": "nodiff",
+        "type": "nested",
         "children": [
           {
             "key": "doge",
@@ -95,7 +95,7 @@
             "prevValue": {
               "wow": ""
             },
-            "type": "nodiff",
+            "type": "nested",
             "children": [
               {
                 "key": "wow",
@@ -137,7 +137,7 @@
         "key": "value"
       }
     },
-    "type": "nodiff",
+    "type": "nested",
     "children": [
       {
         "key": "baz",

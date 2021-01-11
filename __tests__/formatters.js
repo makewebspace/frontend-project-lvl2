@@ -1,16 +1,12 @@
-import { test, beforeAll } from '@jest/globals';
-import formatDiff, { availableFormats } from '../src/formatters/index.js';
+import { test } from '@jest/globals';
 import { readFile } from '../src/utils.js';
 import parse from '../src/parser.js';
+import formatDiff, { availableFormats } from '../src/formatters/index.js';
 
 const getFixturePath = (filename) => `__fixtures__/${filename}`;
 
-let diff;
-
-beforeAll(() => {
-  const content = readFile(getFixturePath('json'));
-  diff = parse(content, 'json');
-});
+const content = readFile(getFixturePath('json'));
+const diff = parse(content, 'json');
 
 test.each(availableFormats)('%s', (formatName) => {
   const expected = readFile(getFixturePath(formatName));

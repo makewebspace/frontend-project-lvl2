@@ -1,17 +1,17 @@
 import { test } from '@jest/globals';
-import { getUniqKeys, isObject } from '../src/utils.js';
+import { getUniqKeys, isObject, isEqual } from '../src/utils.js';
 
 test('getUniqKeys', () => {
-  expect(getUniqKeys({}, {}, {})).toEqual([]);
+  expect(getUniqKeys([{}, {}, {}])).toEqual([]);
 
   const expected = ['a', 'b', 'c'];
-  expect(getUniqKeys({ a: 1, b: 2, c: 3 })).toEqual(expected);
-  expect(getUniqKeys({ a: 1 }, { b: 2, c: 3 })).toEqual(expected);
-  expect(getUniqKeys({ a: 1 }, { b: 2 }, { c: 3 })).toEqual(expected);
+  expect(getUniqKeys([{ a: 1, b: 2, c: 3 }])).toEqual(expected);
+  expect(getUniqKeys([{ a: 1 }, { b: 2, c: 3 }])).toEqual(expected);
+  expect(getUniqKeys([{ a: 1 }, { b: 2 }, { c: 3 }])).toEqual(expected);
 
   expect(() => getUniqKeys(null)).toThrow();
   expect(() => getUniqKeys(undefined)).toThrow();
-  expect(() => getUniqKeys([])).toThrow();
+  expect(() => getUniqKeys([null, undefined])).toThrow();
   expect(() => getUniqKeys(123)).toThrow();
   expect(() => getUniqKeys('str')).toThrow();
   expect(() => getUniqKeys(true)).toThrow();
@@ -35,4 +35,19 @@ test('isObject', () => {
   expect(isObject(Symbol('1'))).not.toBeTruthy();
   expect(isObject(undefined)).not.toBeTruthy();
   expect(isObject(BigInt(1))).not.toBeTruthy();
+});
+
+test('isEqual', () => {
+  expect(isEqual()).toBeTruthy();
+  expect(isEqual(1, 1)).toBeTruthy();
+  expect(isEqual('1', '1')).toBeTruthy();
+  expect(isEqual(true, true)).toBeTruthy();
+  expect(isEqual(null, null)).toBeTruthy();
+  expect(isEqual([], [])).toBeTruthy();
+  expect(isEqual(NaN, NaN)).toBeTruthy();
+
+  expect(isEqual(1, 2)).not.toBeTruthy();
+  expect(isEqual('1', '2')).not.toBeTruthy();
+  expect(isEqual([1], [2])).not.toBeTruthy();
+  expect(isEqual(true, false)).not.toBeTruthy();
 });

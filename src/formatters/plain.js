@@ -15,17 +15,18 @@ const getPropName = (props, key) => (props.length ? [...props, key].join('.') : 
 const getDiffView = (key, props, rest) => `Property '${getPropName(props, key)}' was ${rest}`;
 
 const viewByType = {
-  [DIFF_TYPE.ADD]: ({ key, value }, props) => getDiffView(key, props, `added with value: ${getValueView(value)}`),
-  [DIFF_TYPE.DEL]: ({ key }, props) => getDiffView(key, props, 'removed'),
-  [DIFF_TYPE.UPD]: ({ key, value, prevValue }, props) => {
+  [DIFF_TYPE.ADDED]: ({ key, value }, props) => getDiffView(key, props, `added with value: ${getValueView(value)}`),
+  [DIFF_TYPE.DELETED]: ({ key }, props) => getDiffView(key, props, 'removed'),
+  [DIFF_TYPE.UPDATED]: ({ key, value, prevValue }, props) => {
     const rest = `updated. From ${getValueView(prevValue)} to ${getValueView(value)}`;
     return getDiffView(key, props, rest);
   },
-  [DIFF_TYPE.NOT]: ({ key, children }, props, toFormat) => toFormat(children, [...props, key]),
+  [DIFF_TYPE.NESTED]: ({ key, children }, props, toFormat) => toFormat(children, [...props, key]),
+  [DIFF_TYPE.NO_DIFF]: ({ key, children }, props, toFormat) => toFormat(children, [...props, key]),
 };
 
 const toFormat = (nodes, props) => {
-  const toString = ({ type, ...node }) => viewByType[type](node, props, toFormat);
+  const toString = (node) => viewByType[node.type](node, props, toFormat);
   return nodes.flatMap(toString);
 };
 

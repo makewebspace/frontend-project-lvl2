@@ -6,24 +6,27 @@ import {
   getUniqKeys,
   getFileType,
   isObjects,
+  isEqual,
+  sort,
 } from './utils.js';
 
 const getDiffType = (previous, current) => {
   switch (true) {
     case previous === undefined:
-      return DIFF_TYPE.ADD;
+      return DIFF_TYPE.ADDED;
     case current === undefined:
-      return DIFF_TYPE.DEL;
-    case !isObjects(previous, current)
-      && !Object.is(previous, current):
-      return DIFF_TYPE.UPD;
+      return DIFF_TYPE.DELETED;
+    case isObjects([previous, current]):
+      return DIFF_TYPE.NESTED;
+    case !isEqual(previous, current):
+      return DIFF_TYPE.UPDATED;
     default:
-      return DIFF_TYPE.NOT;
+      return DIFF_TYPE.NO_DIFF;
   }
 };
 
 export const calculateDiff = (reference, comparable) => {
-  if (!isObjects(reference, comparable)) {
+  if (!isObjects([reference, comparable])) {
     return [];
   }
   const toDiffObject = (key) => {
@@ -37,7 +40,8 @@ export const calculateDiff = (reference, comparable) => {
       children: calculateDiff(prevValue, value),
     };
   };
-  return getUniqKeys(reference, comparable).sort().map(toDiffObject);
+  const sortedKeys = sort(getUniqKeys([reference, comparable]));
+  return sortedKeys.map(toDiffObject);
 };
 
 export default (filepath1, filepath2, formatName) => {

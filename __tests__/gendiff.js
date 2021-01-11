@@ -81,7 +81,7 @@ describe('calculateDiff', () => {
         key: 'follow',
         prevValue: undefined,
         value: false,
-        type: DIFF_TYPE.ADD,
+        type: DIFF_TYPE.ADDED,
         children: [],
       },
       {
@@ -90,35 +90,35 @@ describe('calculateDiff', () => {
         value: {
           key: 'value',
         },
-        type: DIFF_TYPE.UPD,
+        type: DIFF_TYPE.UPDATED,
         children: [],
       },
       {
         key: 'setting1',
         prevValue: 'Value 1',
         value: 'Value 1',
-        type: DIFF_TYPE.NOT,
+        type: DIFF_TYPE.NO_DIFF,
         children: [],
       },
       {
         key: 'setting2',
         prevValue: 200,
         value: undefined,
-        type: DIFF_TYPE.DEL,
+        type: DIFF_TYPE.DELETED,
         children: [],
       },
       {
         key: 'setting3',
         prevValue: true,
         value: null,
-        type: DIFF_TYPE.UPD,
+        type: DIFF_TYPE.UPDATED,
         children: [],
       },
       {
         key: 'setting4',
         prevValue: undefined,
         value: 'blah blah',
-        type: DIFF_TYPE.ADD,
+        type: DIFF_TYPE.ADDED,
         children: [],
       },
       {
@@ -127,7 +127,7 @@ describe('calculateDiff', () => {
         value: {
           key5: 'value5',
         },
-        type: DIFF_TYPE.ADD,
+        type: DIFF_TYPE.ADDED,
         children: [],
       },
       {
@@ -145,7 +145,7 @@ describe('calculateDiff', () => {
             wow: 'so much',
           },
         },
-        type: DIFF_TYPE.NOT,
+        type: DIFF_TYPE.NESTED,
         children: [
           {
             key: 'doge',
@@ -155,13 +155,13 @@ describe('calculateDiff', () => {
             value: {
               wow: 'so much',
             },
-            type: DIFF_TYPE.NOT,
+            type: DIFF_TYPE.NESTED,
             children: [
               {
                 key: 'wow',
                 prevValue: '',
                 value: 'so much',
-                type: DIFF_TYPE.UPD,
+                type: DIFF_TYPE.UPDATED,
                 children: [],
               },
             ],
@@ -170,14 +170,14 @@ describe('calculateDiff', () => {
             key: 'key',
             prevValue: 'value',
             value: 'value',
-            type: DIFF_TYPE.NOT,
+            type: DIFF_TYPE.NO_DIFF,
             children: [],
           },
           {
             key: 'ops',
             prevValue: undefined,
             value: 'vops',
-            type: DIFF_TYPE.ADD,
+            type: DIFF_TYPE.ADDED,
             children: [],
           },
         ],

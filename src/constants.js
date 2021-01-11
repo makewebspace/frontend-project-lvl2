@@ -1,8 +1,9 @@
 export const DIFF_TYPE = {
-  ADD: 'added',
-  DEL: 'deleted',
-  UPD: 'updated',
-  NOT: 'nodiff',
+  ADDED: 'added',
+  DELETED: 'deleted',
+  UPDATED: 'updated',
+  NESTED: 'nested',
+  NO_DIFF: 'nodiff',
 };
 
 export const FORMAT_NAME = {
