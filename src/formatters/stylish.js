@@ -1,18 +1,37 @@
 import { DIFF_TYPE } from '../constants.js';
+import { isObject } from '../utils.js';
 
-const toFormat = (diffs = [], nesting = 0) => {
-  if (!diffs.length) return '';
-  const padding = ' '.repeat(4 * nesting + 2);
-  const getValueView = (val) => (Array.isArray(val) ? toFormat(val, nesting + 1) : val);
-  const getDiffView = (type, key, value) => `${padding}${type} ${key}: ${getValueView(value)}`;
-  const diffByType = {
-    [DIFF_TYPE.ADD]: (key, val) => getDiffView('+', key, val),
-    [DIFF_TYPE.DEL]: (key, val) => getDiffView('-', key, val),
-    [DIFF_TYPE.UPD]: (key, val, prevVal) => `${getDiffView('-', key, prevVal)}\n${getDiffView('+', key, val)}`,
-    [DIFF_TYPE.NOT]: (key, val) => getDiffView(' ', key, val),
-  };
-  const toString = ({ key, value, prevValue, type }) => diffByType[type](key, value, prevValue);
-  return `{\n${diffs.map(toString).join('\n')}\n${padding.substring(2)}}`;
+const getIndent = (depth, spaceCount = 4) => ' '.repeat(spaceCount * depth + 2);
+const toBrackets = (output, depth) => `{\n${output.join('\n')}\n${getIndent(depth).substring(2)}}`;
+
+const stringify = (val, depth) => {
+  if (!isObject(val)) {
+    return val;
+  }
+  const toString = ([key, value]) => `${getIndent(depth)}  ${key}: ${stringify(value, depth + 1)}`;
+  const output = Object.entries(val).map(toString);
+  return toBrackets(output, depth);
 };
 
-export default toFormat;
+const getDiffView = (key, val, token, depth) => `${getIndent(depth)}${token} ${key}: ${stringify(val, depth + 1)}`;
+
+const viewByType = {
+  [DIFF_TYPE.ADD]: ({ key, value }, depth) => getDiffView(key, value, '+', depth),
+  [DIFF_TYPE.DEL]: ({ key, prevValue }, depth) => getDiffView(key, prevValue, '-', depth),
+  [DIFF_TYPE.UPD]: ({ key, value, prevValue }, depth) => {
+    const deleted = getDiffView(key, prevValue, '-', depth);
+    const added = getDiffView(key, value, '+', depth);
+    return [deleted, added].join('\n');
+  },
+  [DIFF_TYPE.NOT]: ({ key, value, children }, depth, toFormat) => {
+    const nestedValue = children.length ? toFormat(children, depth + 1) : value;
+    return getDiffView(key, nestedValue, ' ', depth);
+  },
+};
+
+const toFormat = (nodes, depth) => {
+  const output = nodes.map(({ type, ...node }) => viewByType[type](node, depth, toFormat));
+  return toBrackets(output, depth);
+};
+
+export default (diffs = []) => (diffs.length ? toFormat(diffs, 0) : '');

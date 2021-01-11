@@ -1,9 +1,10 @@
 import assert from 'assert';
 import yaml from 'js-yaml';
+import { FILE_TYPE } from './constants.js';
 
 const parsers = {
-  json: JSON.parse,
-  yml: yaml.safeLoad,
+  [FILE_TYPE.JSON]: JSON.parse,
+  [FILE_TYPE.YAML]: yaml.safeLoad,
 };
 
 const availableTypes = Object.keys(parsers);

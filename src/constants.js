@@ -5,6 +5,13 @@ export const DIFF_TYPE = {
   NOT: 'nodiff',
 };
 
-export default {
-  DIFF_TYPE,
+export const FORMAT_NAME = {
+  STYLISH: 'stylish',
+  PLAIN: 'plain',
+  JSON: 'json',
+};
+
+export const FILE_TYPE = {
+  JSON: 'json',
+  YAML: 'yml',
 };

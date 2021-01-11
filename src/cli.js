@@ -1,4 +1,4 @@
-import { program } from 'commander';
+import program from 'commander';
 import { readFile } from './utils.js';
 import genDiff from './gendiff.js';
 
@@ -13,8 +13,7 @@ export default () => {
   program
     .arguments('<filepath1> <filepath2>')
     .action((filepath1, filepath2, { format }) => {
-      const diff = genDiff(filepath1, filepath2, format);
-      console.log(diff);
+      console.log(genDiff(filepath1, filepath2, format));
     });
 
   program.parse(process.argv);

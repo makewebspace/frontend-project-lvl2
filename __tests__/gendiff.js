@@ -2,7 +2,7 @@ import { describe, test } from '@jest/globals';
 import { readFile } from '../src/utils.js';
 import genDiff, { calculateDiff } from '../src/gendiff.js';
 import { DIFF_TYPE } from '../src/constants.js';
-import { FORMATS } from '../src/formatters/index.js';
+import { availableFormats } from '../src/formatters/index.js';
 
 const getRelativePath = (filename) => `__fixtures__/${filename}`;
 
@@ -19,7 +19,7 @@ describe('gendiff', () => {
       yaml: (formatName) => genDiff(yamlFile1, yamlFile2, formatName),
     };
 
-    test.each(FORMATS)('in %s format', (formatName) => {
+    test.each(availableFormats)('in %s format', (formatName) => {
       const expected = readFile(getRelativePath(formatName));
       expect(actual.json(formatName)).toBe(expected);
       expect(actual.yaml(formatName)).toBe(expected);
@@ -46,89 +46,139 @@ describe('gendiff', () => {
 describe('calculateDiff', () => {
   test('when objects has difference', () => {
     const reference = {
-      common: {
-        setting1: 'Value 1',
-        setting2: 200,
-        setting3: true,
-        setting6: {
+      setting1: 'Value 1',
+      setting2: 200,
+      setting3: true,
+      setting6: {
+        key: 'value',
+        doge: {
+          wow: '',
+        },
+      },
+      nest: 'str',
+    };
+    const comparable = {
+      follow: false,
+      setting1: 'Value 1',
+      setting3: null,
+      setting4: 'blah blah',
+      setting5: {
+        key5: 'value5',
+      },
+      setting6: {
+        key: 'value',
+        ops: 'vops',
+        doge: {
+          wow: 'so much',
+        },
+      },
+      nest: {
+        key: 'value',
+      },
+    };
+    const expected = [
+      {
+        key: 'follow',
+        prevValue: undefined,
+        value: false,
+        type: DIFF_TYPE.ADD,
+        children: [],
+      },
+      {
+        key: 'nest',
+        prevValue: 'str',
+        value: {
+          key: 'value',
+        },
+        type: DIFF_TYPE.UPD,
+        children: [],
+      },
+      {
+        key: 'setting1',
+        prevValue: 'Value 1',
+        value: 'Value 1',
+        type: DIFF_TYPE.NOT,
+        children: [],
+      },
+      {
+        key: 'setting2',
+        prevValue: 200,
+        value: undefined,
+        type: DIFF_TYPE.DEL,
+        children: [],
+      },
+      {
+        key: 'setting3',
+        prevValue: true,
+        value: null,
+        type: DIFF_TYPE.UPD,
+        children: [],
+      },
+      {
+        key: 'setting4',
+        prevValue: undefined,
+        value: 'blah blah',
+        type: DIFF_TYPE.ADD,
+        children: [],
+      },
+      {
+        key: 'setting5',
+        prevValue: undefined,
+        value: {
+          key5: 'value5',
+        },
+        type: DIFF_TYPE.ADD,
+        children: [],
+      },
+      {
+        key: 'setting6',
+        prevValue: {
           key: 'value',
           doge: {
             wow: '',
           },
         },
-        nest: 'str',
-      },
-    };
-    const comparable = {
-      common: {
-        follow: false,
-        setting1: 'Value 1',
-        setting3: null,
-        setting4: 'blah blah',
-        setting5: {
-          key5: 'value5',
-        },
-        setting6: {
+        value: {
           key: 'value',
           ops: 'vops',
           doge: {
             wow: 'so much',
           },
         },
-        nest: {
-          key: 'value',
-        },
-      },
-    };
-    const expected = [
-      {
-        key: 'common',
         type: DIFF_TYPE.NOT,
-        value: [
-          { key: 'follow', value: false, type: DIFF_TYPE.ADD },
+        children: [
           {
-            key: 'nest',
-            value: [
-              { key: 'key', value: 'value', type: DIFF_TYPE.NOT },
-            ],
-            type: DIFF_TYPE.UPD,
-            prevValue: 'str',
-          },
-          { key: 'setting1', value: 'Value 1', type: DIFF_TYPE.NOT },
-          { key: 'setting2', value: 200, type: DIFF_TYPE.DEL },
-          {
-            key: 'setting3',
-            value: null,
-            type: DIFF_TYPE.UPD,
-            prevValue: true,
-          },
-          { key: 'setting4', value: 'blah blah', type: DIFF_TYPE.ADD },
-          {
-            key: 'setting5',
-            value: [
-              { key: 'key5', value: 'value5', type: DIFF_TYPE.NOT },
-            ],
-            type: DIFF_TYPE.ADD,
-          },
-          {
-            key: 'setting6',
+            key: 'doge',
+            prevValue: {
+              wow: '',
+            },
+            value: {
+              wow: 'so much',
+            },
             type: DIFF_TYPE.NOT,
-            value: [
+            children: [
               {
-                key: 'doge',
-                type: DIFF_TYPE.NOT,
-                value: [
-                  {
-                    key: 'wow',
-                    value: 'so much',
-                    type: DIFF_TYPE.UPD,
-                    prevValue: '',
-                  },
-                ],
+                key: 'wow',
+                prevValue: '',
+                value: 'so much',
+                type: DIFF_TYPE.UPD,
+                children: [],
               },
-              { key: 'key', value: 'value', type: DIFF_TYPE.NOT },
-              { key: 'ops', value: 'vops', type: DIFF_TYPE.ADD },
             ],
+          },
+          {
+            key: 'key',
+            prevValue: 'value',
+            value: 'value',
+            type: DIFF_TYPE.NOT,
+            children: [],
+          },
+          {
+            key: 'ops',
+            prevValue: undefined,
+            value: 'vops',
+            type: DIFF_TYPE.ADD,
+            children: [],
           },
         ],
       },

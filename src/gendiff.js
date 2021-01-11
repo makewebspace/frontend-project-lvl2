@@ -5,32 +5,39 @@ import {
   readFile,
   getUniqKeys,
   getFileType,
-  isObject,
+  isObjects,
 } from './utils.js';
 
-export const calculateDiff = (ref, comp) => {
-  const getValueBy = (val) => (isObject(val) ? calculateDiff(val, val) : val);
-  const toDiffObject = (acc, key) => {
-    const refVal = ref[key];
-    const compVal = comp[key];
-    const diff = { key, value: refVal, type: DIFF_TYPE.NOT };
-    if (refVal === undefined) {
-      diff.type = DIFF_TYPE.ADD;
-      diff.value = getValueBy(compVal);
-    } else if (compVal === undefined) {
-      diff.type = DIFF_TYPE.DEL;
-      diff.value = getValueBy(refVal);
-    } else if (isObject(refVal) && isObject(compVal)) {
-      diff.value = calculateDiff(refVal, compVal);
-    } else if (refVal !== compVal) {
-      diff.type = DIFF_TYPE.UPD;
-      diff.value = getValueBy(compVal);
-      diff.prevValue = getValueBy(refVal);
-    }
-    acc.push(diff);
-    return acc;
+const getDiffType = (previous, current) => {
+  switch (true) {
+    case previous === undefined:
+      return DIFF_TYPE.ADD;
+    case current === undefined:
+      return DIFF_TYPE.DEL;
+    case !isObjects(previous, current)
+      && !Object.is(previous, current):
+      return DIFF_TYPE.UPD;
+    default:
+      return DIFF_TYPE.NOT;
+  }
+};
+
+export const calculateDiff = (reference, comparable) => {
+  if (!isObjects(reference, comparable)) {
+    return [];
+  }
+  const toDiffObject = (key) => {
+    const prevValue = reference[key];
+    const value = comparable[key];
+    return {
+      key,
+      value,
+      prevValue,
+      type: getDiffType(prevValue, value),
+      children: calculateDiff(prevValue, value),
+    };
   };
-  return getUniqKeys(ref, comp).sort().reduce(toDiffObject, []);
+  return getUniqKeys(reference, comparable).sort().map(toDiffObject);
 };
 
 export default (filepath1, filepath2, formatName) => {

@@ -1,6 +1,1 @@
-export default (diffs = []) => {
-  if (!diffs.length) {
-    return '';
-  }
-  return JSON.stringify(diffs, null, 2);
-};
+export default (diffs = []) => (diffs.length ? JSON.stringify(diffs, null, 2) : '');
