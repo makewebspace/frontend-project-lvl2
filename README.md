@@ -6,6 +6,7 @@ The tiny utility that compares two configuration files and shows a difference.
 [![Maintainability](https://api.codeclimate.com/v1/badges/bdb1000233387957e991/maintainability)](https://codeclimate.com/github/makewebspace/frontend-project-lvl2/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/bdb1000233387957e991/test_coverage)](https://codeclimate.com/github/makewebspace/frontend-project-lvl2/test_coverage)
 
+[![asciicast](https://asciinema.org/a/CzyZMXYMr05SdMz8EATnQxsFm.svg)](https://asciinema.org/a/CzyZMXYMr05SdMz8EATnQxsFm)
 ## Install
 ```bash
 git clone https://github.com/makewebspace/frontend-project-lvl2.git
