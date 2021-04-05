@@ -1,5 +1,5 @@
-import assert from 'assert';
 import yaml from 'js-yaml';
+import { strict as assert } from 'assert';
 import { FILE_TYPE } from './constants.js';
 
 const parsers = {

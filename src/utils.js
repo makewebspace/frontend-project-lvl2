@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import assert from 'assert';
+import { strict as assert } from 'assert';
 
 export const getFullPath = (filepath) => path.resolve(process.cwd(), filepath);
 export const readFile = (filepath) => fs.readFileSync(getFullPath(filepath), 'utf-8').trim();

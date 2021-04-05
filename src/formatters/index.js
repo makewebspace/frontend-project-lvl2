@@ -1,8 +1,8 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
+import { FORMAT_NAME } from '../constants.js';
 import stylish from './stylish.js';
 import plain from './plain.js';
 import json from './json.js';
-import { FORMAT_NAME } from '../constants.js';
 
 const formatters = {
   [FORMAT_NAME.STYLISH]: stylish,

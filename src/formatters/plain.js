@@ -12,14 +12,14 @@ const getValueView = (val) => {
 };
 
 const getPropName = (props, key) => (props.length ? [...props, key].join('.') : key);
-const getDiffView = (key, props, rest) => `Property '${getPropName(props, key)}' was ${rest}`;
+const stringify = (key, props, rest) => `Property '${getPropName(props, key)}' was ${rest}`;
 
 const viewByType = {
-  [DIFF_TYPE.ADDED]: ({ key, value }, props) => getDiffView(key, props, `added with value: ${getValueView(value)}`),
-  [DIFF_TYPE.DELETED]: ({ key }, props) => getDiffView(key, props, 'removed'),
+  [DIFF_TYPE.ADDED]: ({ key, value }, props) => stringify(key, props, `added with value: ${getValueView(value)}`),
+  [DIFF_TYPE.DELETED]: ({ key }, props) => stringify(key, props, 'removed'),
   [DIFF_TYPE.UPDATED]: ({ key, value, prevValue }, props) => {
     const rest = `updated. From ${getValueView(prevValue)} to ${getValueView(value)}`;
-    return getDiffView(key, props, rest);
+    return stringify(key, props, rest);
   },
   [DIFF_TYPE.NESTED]: ({ key, children }, props, toFormat) => toFormat(children, [...props, key]),
   [DIFF_TYPE.NO_DIFF]: ({ key, children }, props, toFormat) => toFormat(children, [...props, key]),
