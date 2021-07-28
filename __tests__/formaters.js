@@ -1,7 +1,7 @@
 import { test } from '@jest/globals';
 import { readFile } from '../src/utils.js';
 import parse from '../src/parser.js';
-import formatDiff, { availableFormats } from '../src/formatters/index.js';
+import formatDiff, { availableFormats } from '../src/formaters/index.js';
 
 const getFixturePath = (filename) => `__fixtures__/${filename}`;
 

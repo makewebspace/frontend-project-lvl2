@@ -4,16 +4,16 @@ import stylish from './stylish.js';
 import plain from './plain.js';
 import json from './json.js';
 
-const formatters = {
+const formaters = {
   [FORMAT_NAME.STYLISH]: stylish,
   [FORMAT_NAME.PLAIN]: plain,
   [FORMAT_NAME.JSON]: json,
 };
-export const availableFormats = Object.keys(formatters);
+export const availableFormats = Object.keys(formaters);
 const errorMessage = `Wrong output format! Available formats to output should be ${availableFormats.join(', ')}`;
 
-export default (diffs, formatName = FORMAT_NAME.STYLISH) => {
+export default (innerTree, formatName = FORMAT_NAME.STYLISH) => {
   assert(availableFormats.includes(formatName), errorMessage);
-  const toFormat = formatters[formatName];
-  return toFormat(diffs);
+  const format = formaters[formatName];
+  return format(innerTree);
 };

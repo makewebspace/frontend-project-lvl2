@@ -6,32 +6,32 @@ import {
   sort,
 } from './utils.js';
 
-const isNotEqual = (val1, val2) => !isEqual(val1, val2);
+const isNotEqual = (value1, value2) => !isEqual(value1, value2);
 
-const getDiffType = (previous, current) => {
+const getDiffType = (value1, value2) => {
   switch (true) {
-    case previous === undefined:
+    case value1 === undefined:
       return DIFF_TYPE.ADDED;
-    case current === undefined:
+    case value2 === undefined:
       return DIFF_TYPE.DELETED;
-    case isObjects([previous, current]):
+    case isObjects([value1, value2]):
       return DIFF_TYPE.NESTED;
-    case isNotEqual(previous, current):
+    case isNotEqual(value1, value2):
       return DIFF_TYPE.UPDATED;
-    case previous === current:
+    case value1 === value2:
       return DIFF_TYPE.NO_DIFF;
     default:
-      throw new Error(`Unexpected case when trying to compare ${previous} and ${current}`);
+      throw new Error(`Unexpected case when trying to compare ${value1} and ${value2}`);
   }
 };
 
-const buildTree = (reference, comparable) => {
-  if (!isObjects([reference, comparable])) {
+const buildTree = (data1, data2) => {
+  if (!isObjects([data1, data2])) {
     return [];
   }
-  const toDiffObject = (key) => {
-    const prevValue = reference[key];
-    const value = comparable[key];
+  const toTreeNode = (key) => {
+    const prevValue = data1[key];
+    const value = data2[key];
     return {
       key,
       value,
@@ -40,8 +40,8 @@ const buildTree = (reference, comparable) => {
       children: buildTree(prevValue, value),
     };
   };
-  const sortedKeys = sort(getUniqKeys([reference, comparable]));
-  return sortedKeys.map(toDiffObject);
+  const sortedKeys = sort(getUniqKeys([data1, data2]));
+  return sortedKeys.map(toTreeNode);
 };
 
 export default buildTree;

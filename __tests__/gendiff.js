@@ -1,7 +1,7 @@
 import { describe, test } from '@jest/globals';
 import { readFile } from '../src/utils.js';
 import genDiff from '../src/gendiff.js';
-import { availableFormats } from '../src/formatters/index.js';
+import { availableFormats } from '../src/formaters/index.js';
 
 const getRelativePath = (filename) => `__fixtures__/${filename}`;
 

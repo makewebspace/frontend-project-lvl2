@@ -7,11 +7,11 @@ export const readFile = (filepath) => fs.readFileSync(getFullPath(filepath), 'ut
 export const getFileType = (filename) => path.extname(filename).substr(1);
 export const isObject = (obj) => typeof obj === 'object' && obj !== null && !Array.isArray(obj);
 export const isObjects = (args) => args.flat().every(isObject);
-export const isEqual = (ref, comp) => {
-  if (Array.isArray(ref) && Array.isArray(comp)) {
-    return ref.length === comp.length && ref.every((item) => comp.includes(item));
+export const isEqual = (value1, value2) => {
+  if (Array.isArray(value1) && Array.isArray(value2)) {
+    return value1.length === value2.length && value1.every((item) => value2.includes(item));
   }
-  return Object.is(ref, comp);
+  return Object.is(value1, value2);
 };
 export const getUniqKeys = (args) => {
   assert(isObjects(args), 'Arguments should be an objects!');

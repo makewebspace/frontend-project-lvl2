@@ -8,12 +8,9 @@ const pkg = JSON.parse(readFile('package.json'));
 program
   .version(pkg.version, '-V, --version')
   .description(pkg.description)
-  .option('-f, --format [type]', 'output format', 'stylish');
-
-program
+  .option('-f, --format [type]', 'output format', 'stylish')
   .arguments('<filepath1> <filepath2>')
   .action((filepath1, filepath2, { format }) => {
     console.log(genDiff(filepath1, filepath2, format));
-  });
-
-program.parse(process.argv);
+  })
+  .parse(process.argv);
